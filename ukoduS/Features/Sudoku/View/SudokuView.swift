@@ -5,71 +5,100 @@ struct SudokuView: View {
     private let gridSize: CGFloat = UIScreen.main.bounds.width - 40
     
     var body: some View {
-        VStack {
-            if !viewModel.isGameActive {
-                startView
-            } else {
-                gameView
+        ZStack {
+            Color(.systemBackground)
+                .ignoresSafeArea()
+            
+            VStack {
+                if !viewModel.isGameActive {
+                    startView
+                } else {
+                    gameView
+                }
             }
         }
         .preferredColorScheme(.light)
     }
     
     private var startView: some View {
-        VStack(spacing: 20) {
+        VStack(spacing: 30) {
             Text(LocalizedStringKey("app.name"))
-                .font(.largeTitle)
-                .padding()
+                .font(.system(size: 48, weight: .bold))
+                .foregroundColor(.blue)
+                .padding(.top, 50)
             
             Text(LocalizedStringKey("game.select.difficulty"))
                 .font(.title2)
+                .foregroundColor(.secondary)
             
-            ForEach(Difficulty.allCases, id: \.self) { difficulty in
-                Button(action: {
-                    viewModel.startNewGame(difficulty: difficulty)
-                }) {
-                    Text(LocalizedStringKey(difficulty.rawValue))
-                        .font(.title3)
-                        .frame(width: 200)
-                        .padding()
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
+            VStack(spacing: 15) {
+                ForEach(Difficulty.allCases, id: \.self) { difficulty in
+                    Button(action: {
+                        withAnimation {
+                            viewModel.startNewGame(difficulty: difficulty)
+                        }
+                    }) {
+                        Text(LocalizedStringKey(difficulty.rawValue))
+                            .font(.title3)
+                            .frame(width: 200)
+                            .padding()
+                            .background(
+                                RoundedRectangle(cornerRadius: 15)
+                                    .fill(Color.blue)
+                                    .shadow(color: .black.opacity(0.2), radius: 5, x: 0, y: 2)
+                            )
+                            .foregroundColor(.white)
+                    }
+                    .buttonStyle(ScaleButtonStyle())
                 }
             }
+            .padding(.top, 20)
+            
+            Spacer()
         }
+        .padding()
     }
     
     private var gameView: some View {
-        VStack {
+        VStack(spacing: 20) {
             HStack {
                 Text(String(format: NSLocalizedString("game.moves", comment: ""), viewModel.moveCount))
                     .font(.title3)
+                    .foregroundColor(.secondary)
                 Spacer()
             }
-            .padding()
+            .padding(.horizontal)
             
             titleView
             sudokuBoard
             numberPad
             
             Button(action: {
-                viewModel.endGame()
+                withAnimation {
+                    viewModel.endGame()
+                }
             }) {
                 Text(LocalizedStringKey("game.end"))
                     .font(.title3)
+                    .frame(width: 200)
                     .padding()
-                    .background(Color.red)
+                    .background(
+                        RoundedRectangle(cornerRadius: 15)
+                            .fill(Color.red)
+                            .shadow(color: .black.opacity(0.2), radius: 5, x: 0, y: 2)
+                    )
                     .foregroundColor(.white)
-                    .cornerRadius(10)
             }
-            .padding()
+            .buttonStyle(ScaleButtonStyle())
+            .padding(.top, 20)
         }
+        .padding(.vertical)
     }
     
     private var titleView: some View {
         Text("\(Text(LocalizedStringKey("app.name"))) - \(Text(LocalizedStringKey(viewModel.difficulty.rawValue)))")
-            .font(.largeTitle)
+            .font(.title)
+            .foregroundColor(.primary)
             .padding()
     }
     
@@ -92,13 +121,15 @@ struct SudokuView: View {
             }
         }
         .background(Color.black)
+        .cornerRadius(8)
+        .shadow(color: .black.opacity(0.2), radius: 10, x: 0, y: 5)
         .padding()
     }
     
     private var numberPad: some View {
-        VStack(spacing: 10) {
+        VStack(spacing: 15) {
             ForEach(0..<3) { row in
-                HStack(spacing: 10) {
+                HStack(spacing: 15) {
                     ForEach(1...3, id: \.self) { num in
                         NumberButton(number: row * 3 + num) {
                             if let selected = viewModel.selectedCell {
