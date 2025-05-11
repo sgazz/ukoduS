@@ -14,7 +14,19 @@ class SudokuViewModel: ObservableObject {
     
     init(storageService: GameStorageServiceProtocol = GameStorageService()) {
         self.storageService = storageService
-        loadGame()
+    }
+    
+    func loadGame() -> GameState? {
+        return storageService.loadGame()
+    }
+    
+    func resumeGame(_ gameState: GameState) {
+        board = gameState.board
+        solution = gameState.solution
+        initialBoard = gameState.initialBoard
+        moveCount = gameState.moveCount
+        difficulty = gameState.difficulty
+        isGameActive = gameState.isGameActive
     }
     
     func startNewGame(difficulty: Difficulty) {
@@ -187,17 +199,60 @@ class SudokuViewModel: ObservableObject {
         )
         storageService.saveGame(gameState)
     }
-    
-    private func loadGame() {
-        if let gameState = storageService.loadGame() {
-            board = gameState.board
-            solution = gameState.solution
-            initialBoard = gameState.initialBoard
-            moveCount = gameState.moveCount
-            difficulty = gameState.difficulty
-            isGameActive = gameState.isGameActive
-        } else {
-            generateNewGame()
+}
+
+#Preview {
+    struct PreviewWrapper: View {
+        @StateObject private var viewModel = SudokuViewModel()
+        
+        var body: some View {
+            VStack(spacing: 20) {
+                Text("Game State Preview")
+                    .font(.title)
+                    .padding()
+                
+                Group {
+                    Text("Is Game Active: \(viewModel.isGameActive ? "Yes" : "No")")
+                    Text("Difficulty: \(viewModel.difficulty.rawValue)")
+                    Text("Move Count: \(viewModel.moveCount)")
+                }
+                .font(.headline)
+                
+                if let selected = viewModel.selectedCell {
+                    Text("Selected Cell: (\(selected.row), \(selected.col))")
+                        .font(.headline)
+                }
+                
+                VStack(spacing: 1) {
+                    ForEach(0..<9) { row in
+                        HStack(spacing: 1) {
+                            ForEach(0..<9) { col in
+                                Text("\(viewModel.board[row][col])")
+                                    .frame(width: 30, height: 30)
+                                    .background(
+                                        Rectangle()
+                                            .fill(viewModel.initialBoard[row][col] != 0 ? Color.gray.opacity(0.2) : Color.white)
+                                    )
+                                    .overlay(
+                                        Rectangle()
+                                            .stroke(Color.black.opacity(0.1), lineWidth: 0.5)
+                                    )
+                            }
+                        }
+                    }
+                }
+                .background(Color.black)
+                .padding()
+                
+                Button("Start New Game") {
+                    viewModel.startNewGame(difficulty: .easy)
+                }
+                .buttonStyle(ScaleButtonStyle())
+                .padding()
+            }
+            .padding()
         }
     }
+    
+    return PreviewWrapper()
 } 
