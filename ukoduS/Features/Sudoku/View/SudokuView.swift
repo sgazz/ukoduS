@@ -42,12 +42,32 @@ struct SudokuView: View {
                             .font(.title3)
                             .frame(width: 200)
                             .padding()
-                            .background(
-                                RoundedRectangle(cornerRadius: 15)
-                                    .fill(Color.blue)
-                                    .shadow(color: .black.opacity(0.2), radius: 5, x: 0, y: 2)
+                            .background(Color.white)
+                            .foregroundColor(.blue)
+                            .overlay(
+                                Rectangle()
+                                    .stroke(Color.black.opacity(0.1), lineWidth: 0.5)
                             )
-                            .foregroundColor(.white)
+                    }
+                    .buttonStyle(ScaleButtonStyle())
+                }
+                
+                if let savedGame = viewModel.loadGame() {
+                    Button(action: {
+                        withAnimation {
+                            viewModel.resumeGame(savedGame)
+                        }
+                    }) {
+                        Text(LocalizedStringKey("game.resume"))
+                            .font(.title3)
+                            .frame(width: 200)
+                            .padding()
+                            .background(Color.white)
+                            .foregroundColor(.green)
+                            .overlay(
+                                Rectangle()
+                                    .stroke(Color.black.opacity(0.1), lineWidth: 0.5)
+                            )
                     }
                     .buttonStyle(ScaleButtonStyle())
                 }
@@ -82,12 +102,12 @@ struct SudokuView: View {
                     .font(.title3)
                     .frame(width: 200)
                     .padding()
-                    .background(
-                        RoundedRectangle(cornerRadius: 15)
-                            .fill(Color.red)
-                            .shadow(color: .black.opacity(0.2), radius: 5, x: 0, y: 2)
+                    .background(Color.white)
+                    .foregroundColor(.red)
+                    .overlay(
+                        Rectangle()
+                            .stroke(Color.black.opacity(0.1), lineWidth: 0.5)
                     )
-                    .foregroundColor(.white)
             }
             .buttonStyle(ScaleButtonStyle())
             .padding(.top, 20)
@@ -121,8 +141,6 @@ struct SudokuView: View {
             }
         }
         .background(Color.black)
-        .cornerRadius(8)
-        .shadow(color: .black.opacity(0.2), radius: 10, x: 0, y: 5)
         .padding()
     }
     

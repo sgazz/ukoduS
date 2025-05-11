@@ -7,17 +7,13 @@ struct NumberButton: View {
     var body: some View {
         Button(action: action) {
             Text("\(number)")
-                .font(.system(size: 28, weight: .medium))
-                .frame(width: 60, height: 60)
-                .background(
-                    RoundedRectangle(cornerRadius: 12)
-                        .fill(Color.blue)
-                        .shadow(color: .black.opacity(0.2), radius: 3, x: 0, y: 2)
-                )
-                .foregroundColor(.white)
+                .font(.system(size: 24, weight: .medium))
+                .frame(width: 50, height: 50)
+                .background(Color.white)
+                .foregroundColor(.blue)
                 .overlay(
-                    RoundedRectangle(cornerRadius: 12)
-                        .stroke(Color.white.opacity(0.3), lineWidth: 1)
+                    Rectangle()
+                        .stroke(Color.black.opacity(0.1), lineWidth: 0.5)
                 )
         }
         .buttonStyle(ScaleButtonStyle())
@@ -33,10 +29,7 @@ struct ScaleButtonStyle: ButtonStyle {
 }
 
 #Preview {
-    VStack(spacing: 20) {
-        NumberButton(number: 5) {}
-        NumberButton(number: 9) {}
-    }
-    .padding()
-    .background(Color.gray.opacity(0.1))
+    NumberButton(number: 5) {}
+        .padding()
+        .background(Color.gray.opacity(0.1))
 } 
