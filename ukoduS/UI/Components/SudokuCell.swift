@@ -7,15 +7,29 @@ struct SudokuCell: View {
     
     var body: some View {
         Text(number == 0 ? "" : "\(number)")
-            .font(.title2)
+            .font(.system(size: 24, weight: isFixed ? .bold : .regular))
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(isSelected ? Color.blue.opacity(0.3) : Color.white)
+            .background(
+                RoundedRectangle(cornerRadius: 4)
+                    .fill(isSelected ? Color.blue.opacity(0.2) : Color.white)
+                    .shadow(color: .black.opacity(0.1), radius: 1, x: 0, y: 1)
+            )
             .foregroundColor(isFixed ? .black : .blue)
-            .border(Color.gray, width: 0.5)
+            .overlay(
+                RoundedRectangle(cornerRadius: 4)
+                    .stroke(Color.gray.opacity(0.3), lineWidth: 0.5)
+            )
+            .animation(.easeInOut(duration: 0.2), value: isSelected)
     }
 }
 
 #Preview {
-    SudokuCell(number: 5, isSelected: true, isFixed: false)
-        .frame(width: 40, height: 40)
+    VStack(spacing: 10) {
+        SudokuCell(number: 5, isSelected: true, isFixed: false)
+        SudokuCell(number: 3, isSelected: false, isFixed: true)
+        SudokuCell(number: 0, isSelected: false, isFixed: false)
+    }
+    .frame(width: 120, height: 120)
+    .padding()
+    .background(Color.gray.opacity(0.1))
 } 
