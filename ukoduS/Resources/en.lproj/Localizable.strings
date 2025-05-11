@@ -1,0 +1,12 @@
+// MARK: - Common
+"app.name" = "Sudoku";
+
+// MARK: - Game
+"game.select.difficulty" = "Select difficulty:";
+"game.moves" = "Moves: %d";
+"game.end" = "End Game";
+
+// MARK: - Difficulty
+"difficulty.easy" = "Easy";
+"difficulty.medium" = "Medium";
+"difficulty.hard" = "Hard"; 
